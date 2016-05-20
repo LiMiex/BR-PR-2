@@ -1,0 +1,29 @@
+{
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "E277D5018D2F100B262DFAEFFB3DB38805D777C5" : 0,
+    "80CE801F857DF2928C2C1F0B42F40D059B5B82F2" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "9CDBBE66-89AC-4641-8F3C-0FC2706EA81A",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "E277D5018D2F100B262DFAEFFB3DB38805D777C5" : "..",
+    "80CE801F857DF2928C2C1F0B42F40D059B5B82F2" : ""
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Aufgabe2_UDP",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Aufgabe2_UDP.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/github.com\/LiMiex\/BR-PR-2",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "80CE801F857DF2928C2C1F0B42F40D059B5B82F2"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/github.com\/LiMiex\/BR-Hausaufgaben.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E277D5018D2F100B262DFAEFFB3DB38805D777C5"
+    }
+  ]
+}
