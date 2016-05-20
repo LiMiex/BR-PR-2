@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		DF4B9AE71CEF6CCC00C75C0C /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = DF4B9AE61CEF6CCC00C75C0C /* main.c */; };
 		DF4B9AE91CEF6DA700C75C0C /* sender_udp.c in Sources */ = {isa = PBXBuildFile; fileRef = DF4B9AE81CEF6DA700C75C0C /* sender_udp.c */; };
+		DF4B9AEC1CEF929700C75C0C /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = DF4B9AEB1CEF929700C75C0C /* file.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,8 +27,9 @@
 /* Begin PBXFileReference section */
 		DF4B9ADA1CEF6A9100C75C0C /* Aufgabe2_UDP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Aufgabe2_UDP; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF4B9AE61CEF6CCC00C75C0C /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		DF4B9AE81CEF6DA700C75C0C /* sender_udp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sender_udp.c; sourceTree = "<group>"; };
+		DF4B9AE81CEF6DA700C75C0C /* sender_udp.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = sender_udp.c; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; };
 		DF4B9AEA1CEF6DD200C75C0C /* Aufgabe2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Aufgabe2.h; sourceTree = "<group>"; };
+		DF4B9AEB1CEF929700C75C0C /* file.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = file.c; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +46,7 @@
 		DF4B9AD11CEF6A9100C75C0C = {
 			isa = PBXGroup;
 			children = (
+				DF4B9AEB1CEF929700C75C0C /* file.c */,
 				DF4B9AEA1CEF6DD200C75C0C /* Aufgabe2.h */,
 				DF4B9AE81CEF6DA700C75C0C /* sender_udp.c */,
 				DF4B9AE61CEF6CCC00C75C0C /* main.c */,
@@ -117,6 +120,7 @@
 			files = (
 				DF4B9AE91CEF6DA700C75C0C /* sender_udp.c in Sources */,
 				DF4B9AE71CEF6CCC00C75C0C /* main.c in Sources */,
+				DF4B9AEC1CEF929700C75C0C /* file.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
