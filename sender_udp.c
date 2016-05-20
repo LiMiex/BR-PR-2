@@ -7,3 +7,15 @@
 //
 
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+
+
+int main (int argc, char **argv) {
+  int fd;
+  //creating socket
+  if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+    printf("cannot create socket");
+    return 0;
+  }
+}
