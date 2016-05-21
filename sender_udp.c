@@ -9,12 +9,25 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
+
+
 
 int main (int argc, char **argv) {
-    int fd;
+    char buffer[256];
+    struct sockaddr_in server;
+    int sock;
+    
     //creating socket
-    if((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+    if((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         printf("cannot create socket");
         return 0;
     }
+    //serverstruktur
+    server.sin_family = AF_INET;
+    server.sin_addr.s_addr = htonl(argv[1]);
+    server.sin_port = htons(atoi(argv[2]));
 }
