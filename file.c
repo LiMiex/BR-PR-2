@@ -8,12 +8,22 @@
 
 
 #include <stdio.h>
+#include <libgen.h>
 
 // Gets the file length
-long fileLength(FILE *fp){
+unsigned int fileLength(FILE *fp){
     long size = 0;
     fseek(fp, 0, SEEK_END);
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
+    return (unsigned int)size;
+}
+
+char *getFilename(char *name){
+    return basename(name);
+}
+
+unsigned short getFilenameLength(char *name){
+    unsigned short size = sizeof(name) / sizeof(char*)
     return size;
 }

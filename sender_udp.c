@@ -13,15 +13,19 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include "file.c"
+#include "Aufgabe2.h"
 
 
 
 
 int main (int argc, char *argv[]) {
-    char buffer[256];
+    char buffer[1491];
     struct sockaddr_in server;
     int sock, send;
-    long fileSize;
+    unsigned short filenameLength;
+    unsigned int fileSize;
+    char* filename;
+
     
     FILE *fp = fopen(argv[3], "a");
     if (fp == NULL) {
@@ -29,7 +33,12 @@ int main (int argc, char *argv[]) {
         return 1;
     }
     
+    //informations for the header
     fileSize = fileLength(fp);
+    filename = getFilename(argv[3]);
+    filenameLength = getFilenameLength(filename);
+
+
     
     if (argc != 4){
         printf("arguments invalid");
@@ -39,6 +48,7 @@ int main (int argc, char *argv[]) {
         return 0;
     }
     //server structure
+    bzero(&server, sizeof(server));
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = htonl(argv[1]);
     server.sin_port = htons(atoi(argv[2]));
