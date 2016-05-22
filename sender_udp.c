@@ -63,9 +63,9 @@ int main (int argc, char *argv[]) {
     fseek(fp, 0, SEEK_END);
     fileSize = ftell(fp);
     fseek(fp, 0, SEEK_SET);
-    uifileSize = (unsigned int) fileSize;
+    uifileSize = htonl((unsigned int) fileSize);
     filename = basename(argv[3]);
-    filenameLength = strlen(filename);
+    filenameLength = htons(strlen(filename));
 
     //setting buffer with null terminals
     memset(buffer,0,BUFFERSIZE);
@@ -89,9 +89,11 @@ int main (int argc, char *argv[]) {
     
     //part 2
     while(current != (unsigned int) fileSize){
+        htonl(times);
         memset(buffer,0,BUFFERSIZE);
         memmove(&buffer[0],&DATA_T,1);
         memmove(&buffer[1],&times,4);
+        ntohl(times);
         //5 for data_t and times, 1 for \0
         if(((unsigned int) fileSize - current) > (BUFFERSIZE - 6)){
             fread(&buffer[5], BUFFERSIZE - 6, 1, fp);
