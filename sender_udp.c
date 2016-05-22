@@ -27,7 +27,7 @@ int main (int argc, char *argv[]) {
     struct sockaddr_in server;
     int sock, send;
     unsigned short filenameLength;
-    long fileSize,
+    long fileSize;
     unsigned int current, times;
     char *filename;
     unsigned char hash[SHA_DIGEST_LENGTH];
