@@ -65,7 +65,7 @@ int main (int argc, char *argv[]) {
     //server structure
     bzero(&dest, sizeof(dest));
     dest.sin_family = AF_INET;
-    dest.sin_addr.s_addr = htonl(argv[1]);
+    dest.sin_addr.s_addr = htonl(inet_addr(argv[1]));
     dest.sin_port = htons(atoi(argv[2]));
     
     //sending header
