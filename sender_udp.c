@@ -24,8 +24,8 @@ int main (int argc, char *argv[]) {
     char buffer[BUFFERSIZE];
     
     //bzero(buffer,BUFFERSIZE);
-    struct sockaddr_in server;
-    int sock, send;
+    struct sockaddr_in dest, from;
+    int sock, send, recv;
     unsigned short filenameLength;
     long fileSize;
     unsigned int current, times;
@@ -65,13 +65,13 @@ int main (int argc, char *argv[]) {
     
 
     //server structure
-    bzero(&server, sizeof(server));
-    server.sin_family = AF_INET;
-    server.sin_addr.s_addr = htonl(argv[1]);
-    server.sin_port = htons(atoi(argv[2]));
+    bzero(&dest, sizeof(dest));
+    dest.sin_family = AF_INET;
+    dest.sin_addr.s_addr = htonl(argv[1]);
+    dest.sin_port = htons(atoi(argv[2]));
     
     //sending header
-    if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &server,sizeof(struct sockaddr_in) )) < 0){
+    if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
         printf("cannot sendto server");
     }
     
@@ -88,7 +88,7 @@ int main (int argc, char *argv[]) {
             fread(buffer[5], (unsigned int) fileSize, 1, fp);
         }
         times++;
-        if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &server,sizeof(struct sockaddr_in) )) < 0){
+        if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
             printf("cannot sendto server");
         }
     }
@@ -104,10 +104,16 @@ int main (int argc, char *argv[]) {
     sha1string = create_sha1_string(hash);
     mememove(buffer[0],DATA_T,1);
     mememove(buffer[1],sha1string,20);
-    if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &server,sizeof(struct sockaddr_in) )) < 0){
+    if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
         printf("cannot sendto server");
     }
     
+    //4.
+    memset(buffer,0,BUFFERSIZE);
+    if((recv = recvfrom(sock, buffer, sizeof(buffer), 0, (struct sockaddr*) &from, sizeof(struct sockaddr_in)) < 0)){
+        printf("cannot recv from server");
+    }
+    printf(buffer);
     
 }
 
