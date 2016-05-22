@@ -13,6 +13,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include <openssl/sha.h>
 #include "file.c"
 #include "Aufgabe2.h"
 #define BUFFERSIZE 1492
@@ -26,8 +27,11 @@ int main (int argc, char *argv[]) {
     struct sockaddr_in server;
     int sock, send;
     unsigned short filenameLength;
-    unsigned int fileSize, current, times;
-    char* filename;
+    long fileSize,
+    unsigned int current, times;
+    char *filename;
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    static char *sha1string;
     current = 0;
     times = 0;
     
@@ -57,7 +61,7 @@ int main (int argc, char *argv[]) {
     memmove(buffer[0],HEADER_T,1);
     memmove(buffer[1],filenameLength,2);
     memmove(buffer[3],filename,filenameLength);
-    memmove(buffer[4+filenameLength],fileSize,4);
+    memmove(buffer[3+filenameLength],(unsigned int) fileSize,4);
     
 
     //server structure
@@ -72,23 +76,39 @@ int main (int argc, char *argv[]) {
     }
     
     //part 2
-    while(current != fileSize){
+    while(current != (unsigned int) fileSize){
         memset(buffer,0,BUFFERSIZE);
         mememove(buffer[0],DATA_T,1);
         mememove(buffer[1],times,4);
         //5 for data_t and times, 1 for \0
-        if((fileSize - current) > (BUFFERSIZE - 6)){
+        if(((unsigned int) fileSize - current) > (BUFFERSIZE - 6)){
             fread(buffer[5], BUFFERSIZE - 6, 1, fp);
             current = (unsigned int) ftell(fp);
         }else{
-            fread(buffer[5], fileSize, 1, fp);
+            fread(buffer[5], (unsigned int) fileSize, 1, fp);
         }
         times++;
         if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &server,sizeof(struct sockaddr_in) )) < 0){
             printf("cannot sendto server");
         }
     }
+    
     rewind(fp);
+    char *string = malloc(fileSize + 1);
+    fread(string, fileSize, 1, fp);
+    fclose(fp);
+    memset(buffer,0,BUFFERSIZE);
+    
+    //3. sha1
+    SHA1(string, strlen(string), hash);
+    sha1string = create_sha1_string(hash);
+    mememove(buffer[0],DATA_T,1);
+    mememove(buffer[1],sha1string,20);
+    if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &server,sizeof(struct sockaddr_in) )) < 0){
+        printf("cannot sendto server");
+    }
+    
+    
 }
 
 
