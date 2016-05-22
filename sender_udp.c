@@ -24,13 +24,18 @@ int main (int argc, char *argv[]) {
     char buffer[BUFFERSIZE];
     //bzero(buffer,BUFFERSIZE);
     struct sockaddr_in dest, from;
-    int sock, send, recv, clo;
+    socklen_t addr_size, client_addr_size;
+    
+
+    int sock, send, recv, clo, flen;
     unsigned short filenameLength;
     long fileSize;
     unsigned int current, times, uifileSize;
     char *filename;
     unsigned char hash[SHA_DIGEST_LENGTH];
     static char *sha1string;
+    
+    flen = sizeof(struct sockaddr_in);
     current = 0;
     times = 0;
 
@@ -71,7 +76,6 @@ int main (int argc, char *argv[]) {
     dest.sin_family = AF_INET;
     dest.sin_addr.s_addr = htonl(inet_addr(argv[1]));
     dest.sin_port = htons(atoi(argv[2]));
-    
     //sending header
     if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
         printf("cannot sendto server");
@@ -112,7 +116,7 @@ int main (int argc, char *argv[]) {
     
     //4.
     memset(buffer,0,BUFFERSIZE);
-    if((recv = recvfrom(sock, buffer, BUFFERSIZE, 0, (struct sockaddr*) &from, sizeof(struct sockaddr_in)) < 0)){
+    if((recv = recvfrom(sock, buffer, BUFFERSIZE, 0, (struct sockaddr*) &from,&flen)) < 0){
         printf("cannot recv from server");
     }
     //printf(buffer);
