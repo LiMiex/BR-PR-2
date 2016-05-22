@@ -36,6 +36,7 @@ int main (int argc, char *argv[]) {
 
     if (argc != 4){
         printf("arguments invalid");
+        return 0;
         //creating udp socket
         if((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
             printf("cannot create socket");
@@ -46,7 +47,7 @@ int main (int argc, char *argv[]) {
     FILE *fp = fopen(argv[3], "rb");
     if (fp == NULL) {
         puts("error in file handling");
-        exit(1);
+        return 0;
     }
     
     //informations for the header
