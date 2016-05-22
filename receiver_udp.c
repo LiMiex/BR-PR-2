@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <openssl/sha.h>
+#include <time.h>
 #include "Aufgabe2.h"
 #define BUFFERSIZE 1500
 
@@ -22,8 +23,11 @@ int main(int argc, char **argv) {
     FILE *fp;
     unsigned char hash[SHA_DIGEST_LENGTH];
     static char *sha1string;
-
+    struct timeval timer;
     struct sockaddr_in servAddr, clientAddr;
+
+    timer.tv_sec = 10;
+    timer.tv_usec = 0;
 
     if (argc != 2) {
     	//error
@@ -57,18 +61,15 @@ int main(int argc, char **argv) {
 	memset(buffer, 0, BUFFERSIZE);
 
 	printf("\nAbout to receive\n");
-	printf("%d", strlen(buffer));
 
     if (recvfrom(sd, buffer, BUFFERSIZE, 0, (struct sockaddr *)&clientAddr, &clientLen) < 0) {
     	printf("Failed to receive data.");
     	return 0;
     }
 
-    memcpy(&temp, buffer, 1);
-    int abc;
-    abc = strtoul(buffer, NULL, 10);
-    printf("\nHeader%d", abc);
-
+    if (setsockopt(sd, SOL_SOCKET, SO_RCVTIMEO, &timer, sizeof(timer)) < 0) {
+        perror("Error");
+    }
 
     if (buffer[0] != HEADER_T) {
     	printf(packet_error);
@@ -79,13 +80,15 @@ int main(int argc, char **argv) {
     memcpy(&fileNameSize, &buffer[1], 2);
     fileNameSize = ntohs(fileNameSize);
 
-    printf("%d\n", fileNameSize);
-
     memcpy(&fileSize, &buffer[fileNameSize + 3], 4);
     fileSize = ntohl(fileSize);
 
+    printf("\n%d %d\n", fileSize, fileNameSize);
+
     for (i = 0; i < fileNameSize; i++)
     	temp[i + 11] = buffer[i + 3];
+
+    printf("not here");
 
 	memset(buffer, 0, BUFFERSIZE);
     remove(temp);
@@ -94,16 +97,16 @@ int main(int argc, char **argv) {
     expectedSeq = 0;
 
     printf("\nHeader received\n");
-    printf("%d", fileSize);
-
-    fileSize = 0;
+    printf("%d", fileNameSize);
 
     while (i < fileSize) {
 
         if (recvfrom(sd, buffer, BUFFERSIZE, 0, (struct sockaddr *)&clientAddr, &clientLen) < 0) {
-        	printf("Failed to receive data.");
+        	printf(timeout_error);
         	return 0;
         }
+
+        printf("a");
 
         if (buffer[0] != DATA_T) {
         	printf("\n DATA_T \n");
@@ -111,8 +114,12 @@ int main(int argc, char **argv) {
         	return 0;
         }
 
+        printf("b");
+
         memcpy(&currentSeq, &buffer[1], 4);
         currentSeq = ntohl(currentSeq);
+
+        printf("c");
 
         if (currentSeq != expectedSeq) {
         	printf(order_error, currentSeq, expectedSeq);
@@ -126,7 +133,7 @@ int main(int argc, char **argv) {
     }
 
     if (recvfrom(sd, buffer, BUFFERSIZE, 0, (struct sockaddr *)&clientAddr, &clientLen) < 0) {
-    	printf("Failed to receive data.");
+    	printf(timeout_error);
     	return 0;
     }
 
@@ -160,7 +167,7 @@ int main(int argc, char **argv) {
 
     free(string);
 
-    if (sendto(sd, buffer, sizeof(buffer), 0, (struct sockaddr *)&clientAddr, sizeof(struct sockaddr_in)) < 0) {
+    if (sendto(sd, buffer, 2, 0, (struct sockaddr *)&clientAddr, sizeof(struct sockaddr_in)) < 0) {
     	//error
     	return 0;
     }
