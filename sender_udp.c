@@ -27,13 +27,13 @@ int main (int argc, char *argv[]) {
     int sock, send, recv, clo;
     unsigned short filenameLength;
     long fileSize;
-    unsigned int current, times;
+    unsigned int current, times, uifileSize;
     char *filename;
     unsigned char hash[SHA_DIGEST_LENGTH];
     static char *sha1string;
     current = 0;
     times = 0;
-    
+
     if (argc != 4){
         printf("arguments invalid");
         //creating udp socket
@@ -53,7 +53,7 @@ int main (int argc, char *argv[]) {
     fseek(fp, 0, SEEK_END);
     fileSize = ftell(fp);
     fseek(fp, 0, SEEK_SET);
-    
+    uifileSize = (unsigned int) fileSize;
     filename = basename(argv[3]);
     filenameLength = sizeof(filename) / sizeof(char*);
 
@@ -62,7 +62,7 @@ int main (int argc, char *argv[]) {
     memmove(&buffer[0],&HEADER_T,1);
     memmove(&(buffer[1]),&filenameLength,2);
     memmove(&buffer[3],&filename,filenameLength);
-    memmove(&buffer[3+filenameLength],(unsigned int) fileSize,4);
+    memmove(&buffer[3+filenameLength],&uifileSize,4);
     
 
     //server structure
@@ -111,7 +111,7 @@ int main (int argc, char *argv[]) {
     
     //4.
     memset(buffer,0,BUFFERSIZE);
-    if((recv = recvfrom(sock, buffer, sizeof(buffer), 0, (struct sockaddr*) &from, sizeof(struct sockaddr_in)) < 0)){
+    if((recv = recvfrom(sock, buffer, BUFFERSIZE, 0, (struct sockaddr*) &from, sizeof(struct sockaddr_in)) < 0)){
         printf("cannot recv from server");
     }
     //printf(buffer);
@@ -119,8 +119,3 @@ int main (int argc, char *argv[]) {
         printf("cannot close socket.");
     }
 }
-
-
-
-
-
