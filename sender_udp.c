@@ -22,7 +22,6 @@
 
 int main (int argc, char *argv[]) {
     char buffer[BUFFERSIZE];
-    
     //bzero(buffer,BUFFERSIZE);
     struct sockaddr_in dest, from;
     int sock, send, recv;
@@ -57,11 +56,10 @@ int main (int argc, char *argv[]) {
     filenameLength = getFilenameLength(filename);
     //setting buffer with null terminals
     memset(buffer,0,BUFFERSIZE);
-        
-    memmove(buffer[0],HEADER_T,1);
-    memmove(buffer[1],filenameLength,2);
-    memmove(buffer[3],filename,filenameLength);
-    memmove(buffer[3+filenameLength],(unsigned int) fileSize,4);
+    memmove(&buffer[0],&HEADER_T,1);
+    memmove(&(buffer[1]),&filenameLength,2);
+    memmove(&buffer[3],&filename,filenameLength);
+    memmove(&buffer[3+filenameLength],(unsigned int) fileSize,4);
     
 
     //server structure
@@ -78,14 +76,14 @@ int main (int argc, char *argv[]) {
     //part 2
     while(current != (unsigned int) fileSize){
         memset(buffer,0,BUFFERSIZE);
-        mememove(buffer[0],DATA_T,1);
-        mememove(buffer[1],times,4);
+        memmove(&buffer[0],&DATA_T,1);
+        memmove(&buffer[1],&times,4);
         //5 for data_t and times, 1 for \0
         if(((unsigned int) fileSize - current) > (BUFFERSIZE - 6)){
-            fread(buffer[5], BUFFERSIZE - 6, 1, fp);
+            fread(&buffer[5], BUFFERSIZE - 6, 1, fp);
             current = (unsigned int) ftell(fp);
         }else{
-            fread(buffer[5], (unsigned int) fileSize, 1, fp);
+            fread(&buffer[5], (unsigned int) fileSize, 1, fp);
         }
         times++;
         if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
@@ -102,8 +100,8 @@ int main (int argc, char *argv[]) {
     //3. sha1
     SHA1(string, strlen(string), hash);
     sha1string = create_sha1_string(hash);
-    mememove(buffer[0],DATA_T,1);
-    mememove(buffer[1],sha1string,20);
+    memmove(&buffer[0],&SHA1_T,1);
+    memmove(&buffer[1],sha1string,20);
     if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
         printf("cannot sendto server");
     }
@@ -113,7 +111,7 @@ int main (int argc, char *argv[]) {
     if((recv = recvfrom(sock, buffer, sizeof(buffer), 0, (struct sockaddr*) &from, sizeof(struct sockaddr_in)) < 0)){
         printf("cannot recv from server");
     }
-    printf(buffer);
+    //printf(buffer);
     
 }
 
