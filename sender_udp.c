@@ -7,6 +7,7 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -16,6 +17,7 @@
 #include <libgen.h>
 #include <openssl/sha.h>
 #include "Aufgabe2.h"
+
 #define BUFFERSIZE 1492
 
 
@@ -77,6 +79,7 @@ int main (int argc, char *argv[]) {
     dest.sin_addr.s_addr = htonl(inet_addr(argv[1]));
     dest.sin_port = htons(atoi(argv[2]));
     //sending header
+    usleep(100000);
     if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
         printf("cannot sendto server");
     }
@@ -94,6 +97,8 @@ int main (int argc, char *argv[]) {
             fread(&buffer[5], (unsigned int) fileSize, 1, fp);
         }
         times++;
+        usleep(100000);
+        printf("%s", buffer);
         if((send = sendto(sock,buffer,sizeof(buffer),0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
             printf("cannot sendto server");
         }
@@ -110,6 +115,7 @@ int main (int argc, char *argv[]) {
     sha1string = create_sha1_string(hash);
     memmove(&buffer[0],&SHA1_T,1);
     memmove(&buffer[1],sha1string,20);
+    usleep(100000);
     if((send = sendto(sock,buffer,sizeof(buffer),0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
         printf("cannot sendto server");
     }
