@@ -13,8 +13,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include <libgen.h>
 #include <openssl/sha.h>
-#include "file.c"
 #include "Aufgabe2.h"
 #define BUFFERSIZE 1492
 
@@ -46,14 +46,17 @@ int main (int argc, char *argv[]) {
     FILE *fp = fopen(argv[3], "rb");
     if (fp == NULL) {
         puts("error in file handling");
-        return 1;
+        exit(1);
     }
     
     //informations for the header
-    fileSize = fileLength(fp);
-    fclose(fp);
-    filename = getFilename(argv[3]);
-    filenameLength = getFilenameLength(filename);
+    fseek(fp, 0, SEEK_END);
+    fileSize = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    
+    filename = basename(argv[3]);
+    filenameLength = sizeof(filename) / sizeof(char*);
+
     //setting buffer with null terminals
     memset(buffer,0,BUFFERSIZE);
     memmove(&buffer[0],&HEADER_T,1);
@@ -86,7 +89,7 @@ int main (int argc, char *argv[]) {
             fread(&buffer[5], (unsigned int) fileSize, 1, fp);
         }
         times++;
-        if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
+        if((send = sendto(sock,buffer,sizeof(buffer),0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
             printf("cannot sendto server");
         }
     }
@@ -102,7 +105,7 @@ int main (int argc, char *argv[]) {
     sha1string = create_sha1_string(hash);
     memmove(&buffer[0],&SHA1_T,1);
     memmove(&buffer[1],sha1string,20);
-    if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
+    if((send = sendto(sock,buffer,sizeof(buffer),0,(struct sockaddr*) &dest,sizeof(struct sockaddr_in) )) < 0){
         printf("cannot sendto server");
     }
     
