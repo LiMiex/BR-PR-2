@@ -11,30 +11,29 @@
 #include <unistd.h>
 #include <openssl/sha.h>
 #include "Aufgabe2.h"
+#define BUFFERSIZE 1500
 
 int main(int argc, char **argv) {
-	const int BUFFERSIZE = 1500;
-    char buffer[BUFFERSIZE] = {0};
+    char buffer[BUFFERSIZE];
     char temp[1500] = "./received/";
-    int sd, clientLen, i, expectedSeq;
+    int sd, i, expectedSeq;
     unsigned short port, fileNameSize;
-    unsigned int fileSize, currentSeq;
+    unsigned int fileSize, currentSeq, clientLen;
     FILE *fp;
     unsigned char hash[SHA_DIGEST_LENGTH];
     static char *sha1string;
 
     struct sockaddr_in servAddr, clientAddr;
-    socklen_t addr_size, client_addr_size;
 
     if (argc != 2) {
     	//error
     	return 0;
     }
-    
+
     port = atoi(argv[1]);
 
     if (port < 1) {
-    	printf("%s", port_error, argv[1]);
+    	printf(port_error, argv[1]);
     	return 0;
     }
 
@@ -44,18 +43,19 @@ int main(int argc, char **argv) {
     }
 
     memset(&servAddr, 0, sizeof(servAddr));
-    
+
     servAddr.sin_family = AF_INET;
     servAddr.sin_addr.s_addr = INADDR_ANY;
     servAddr.sin_port = htons(port);
-    
+
     if ((bind(sd, (struct sockaddr *) &servAddr, sizeof(servAddr))) == -1) {
     	//error
     	return 0;
     }
-    
+
     clientLen = sizeof(clientAddr);
-    
+	memset(buffer, 0, BUFFERSIZE);
+
     if (recvfrom(sd, buffer, BUFFERSIZE, 0, (struct sockaddr *)&clientAddr, &clientLen) < 0) {
     	printf("Failed to receive data.");
     	return 0;
@@ -65,10 +65,10 @@ int main(int argc, char **argv) {
     	printf(packet_error);
     	return 0;
     }
-    
+
     memcpy(&fileNameSize, &buffer[1], 2);
     fileNameSize = ntohs(fileNameSize);
-    
+
     memcpy(&fileSize, &buffer[fileNameSize + 3], 4);
     fileSize = ntohl(fileSize);
 
@@ -139,7 +139,9 @@ int main(int argc, char **argv) {
     	memcpy(&buffer[1], &SHA1_ERROR, 1);
     }
 
-    if (sendto(sd, buffer, sizeof(buffer), 0, (struct sockaddr *)&clientAddr, &clientLen) < 0) {
+    free(string);
+
+    if (sendto(sd, buffer, sizeof(buffer), 0, (struct sockaddr *)&clientAddr, sizeof(struct sockaddr_in)) < 0) {
     	//error
     	return 0;
     }
