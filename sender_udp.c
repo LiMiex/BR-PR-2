@@ -24,7 +24,7 @@ int main (int argc, char *argv[]) {
     char buffer[BUFFERSIZE];
     //bzero(buffer,BUFFERSIZE);
     struct sockaddr_in dest, from;
-    int sock, send, recv;
+    int sock, send, recv, clo;
     unsigned short filenameLength;
     long fileSize;
     unsigned int current, times;
@@ -112,7 +112,9 @@ int main (int argc, char *argv[]) {
         printf("cannot recv from server");
     }
     //printf(buffer);
-    
+    if((clo = close(sock)) < 0){
+        printf("cannot close socket.");
+    }
 }
 
 
