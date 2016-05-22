@@ -24,6 +24,6 @@ char *getFilename(char *name){
 }
 
 unsigned short getFilenameLength(char *name){
-    unsigned short size = sizeof(name) / sizeof(char*)
+    unsigned short size = sizeof(name) / sizeof(char*);
     return size;
 }
