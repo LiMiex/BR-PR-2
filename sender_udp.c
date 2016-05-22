@@ -83,6 +83,7 @@ int main (int argc, char *argv[]) {
         }else{
             fread(buffer[5], fileSize, 1, fp);
         }
+        times++;
         if((send = sendto(sock,buffer,strlen(buffer)+1,0,(struct sockaddr*) &server,sizeof(struct sockaddr_in) )) < 0){
             printf("cannot sendto server");
         }
