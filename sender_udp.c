@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <libgen.h>
-#include <timer.h>
+#include <time.h>
 #include <openssl/sha.h>
 #include <errno.h>
 #include "Aufgabe2.h"
