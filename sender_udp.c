@@ -15,13 +15,12 @@
 #include <unistd.h>
 #include <string.h>
 #include <libgen.h>
+#include <timer.h>
 #include <openssl/sha.h>
 #include <errno.h>
 #include "Aufgabe2.h"
 
 #define BUFFERSIZE 1492
-
-
 
 int main (int argc, char *argv[]) {
     char buffer[BUFFERSIZE];
@@ -37,6 +36,9 @@ int main (int argc, char *argv[]) {
     char *filename;
     unsigned char hash[SHA_DIGEST_LENGTH];
     static char *sha1string;
+    struct timeval timer;
+    timer.tv_sec = 10;
+    timer.tv_usec = 0;
     
     flen = sizeof(struct sockaddr_in);
     current = 0;
@@ -132,12 +134,20 @@ int main (int argc, char *argv[]) {
         return 0;
     }
     
+    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timer, sizeof(timer)) < 0) {
+        perror("Error");
+    }
+    
     //4.
     memset(buffer,0,BUFFERSIZE);
-    if((recv = recvfrom(sock, buffer, BUFFERSIZE, 0, (struct sockaddr*) &from,&flen)) < 0){
+    if((recv = recvfrom(sock, buffer, BUFFERSIZE, 0, (struct sockaddr*) &from,&flen)) == -1){
+        printf(timeout_error);
+        return 0;
+    } else if(recv < -1) {
         printf("cannot recv from server");
         return 0;
     }
+    
     //printf(buffer);
     if((clo = close(sock)) < 0){
         printf("cannot close socket.");
